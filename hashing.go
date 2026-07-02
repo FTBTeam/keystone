@@ -1,6 +1,7 @@
 package ftb_go_utils
 
 import (
+	"crypto"
 	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
@@ -13,16 +14,21 @@ import (
 	"github.com/aviddiviner/go-murmur"
 )
 
-func FileHash(file *os.File, hashType string) (string, error) {
+func FileHash(file *os.File, hashType crypto.Hash) (string, error) {
+	_, err := file.Seek(0, io.SeekStart)
+	if err != nil {
+		return "", err
+	}
+
 	var h hash.Hash
 	switch hashType {
-	case "md5":
+	case crypto.MD5:
 		h = md5.New()
-	case "sha1":
+	case crypto.SHA1:
 		h = sha1.New()
-	case "sha256":
+	case crypto.SHA256:
 		h = sha256.New()
-	case "sha512":
+	case crypto.SHA512:
 		h = sha512.New()
 	default:
 		return "", fmt.Errorf("unsupported hash type: %s", hashType)
