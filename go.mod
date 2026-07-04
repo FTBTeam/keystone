@@ -1,4 +1,4 @@
-module github.com/ftbteam/ftb-go-utils
+module github.com/ftbteam/keystone
 
 go 1.26.4
 
