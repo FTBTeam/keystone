@@ -9,6 +9,25 @@ import (
 	"github.com/aviddiviner/go-murmur"
 )
 
+// CryptoFromString Helper function to convert a string representation of a hash type to the corresponding crypto.Hash value.
+// Deprecated: This function is deprecated and may be removed in future versions. Use the crypto package directly for hash type
+func CryptoFromString(hashType string) (crypto.Hash, error) {
+	switch hashType {
+
+	case "md5":
+		return crypto.MD5, nil
+	case "sha1":
+		return crypto.SHA1, nil
+	case "sha256":
+		return crypto.SHA256, nil
+	case "sha512":
+		return crypto.SHA512, nil
+
+	default:
+		return crypto.SHA1, fmt.Errorf("unknown hash type: %s", hashType)
+	}
+}
+
 func FileHash(file *os.File, hashType crypto.Hash) (string, error) {
 	_, err := file.Seek(0, io.SeekStart)
 	if err != nil {
@@ -50,6 +69,8 @@ func CFMurmurHash(file *os.File) (uint32, error) {
 	murmurHash := murmur.MurmurHash2(filtered, 1)
 	return murmurHash, nil
 }
+
+// helper bits
 
 func isWhitespaceCharacter(b byte) bool {
 	return b == 9 || b == 10 || b == 13 || b == 32
