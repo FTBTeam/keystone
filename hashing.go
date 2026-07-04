@@ -2,12 +2,7 @@ package ftb_go_utils
 
 import (
 	"crypto"
-	"crypto/md5"
-	"crypto/sha1"
-	"crypto/sha256"
-	"crypto/sha512"
 	"fmt"
-	"hash"
 	"io"
 	"os"
 
@@ -20,19 +15,7 @@ func FileHash(file *os.File, hashType crypto.Hash) (string, error) {
 		return "", err
 	}
 
-	var h hash.Hash
-	switch hashType {
-	case crypto.MD5:
-		h = md5.New()
-	case crypto.SHA1:
-		h = sha1.New()
-	case crypto.SHA256:
-		h = sha256.New()
-	case crypto.SHA512:
-		h = sha512.New()
-	default:
-		return "", fmt.Errorf("unsupported hash type: %s", hashType)
-	}
+	h := hashType.New()
 
 	if _, err := io.Copy(h, file); err != nil {
 		return "", err
