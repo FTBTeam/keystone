@@ -28,8 +28,23 @@ func CryptoFromString(hashType string) (crypto.Hash, error) {
 	}
 }
 
-func FileHash(file *os.File, hashType crypto.Hash) (string, error) {
-	_, err := file.Seek(0, io.SeekStart)
+func FileHash[T string | *os.File](inputType T, hashType crypto.Hash) (string, error) {
+	var file *os.File
+	var err error
+
+	switch input := any(inputType).(type) {
+	case string:
+		file, err = os.Open(input)
+		if err != nil {
+			return "", err
+		}
+		defer file.Close()
+	case *os.File:
+		file = input
+	default:
+		return "", fmt.Errorf("unsupported type: %T", inputType)
+	}
+	_, err = file.Seek(0, io.SeekStart)
 	if err != nil {
 		return "", err
 	}
