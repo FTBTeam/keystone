@@ -24,6 +24,26 @@ func FileExists(path string) bool {
 	return !stat.IsDir()
 }
 
+func CopyFile(src, dst string) error {
+	in, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer in.Close()
+
+	out, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, in)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // ParseJsonFile reads a JSON file from the specified path and unmarshal its content into a variable of type T.
 func ParseJsonFile[T any](path string) (T, error) {
 	var result T
